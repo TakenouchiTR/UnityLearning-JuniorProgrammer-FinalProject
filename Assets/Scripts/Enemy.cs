@@ -1,23 +1,54 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public enum EnemyState
     {
-        
+        Waiting,
+        Moving
     }
 
-    // Update is called once per frame
-    void Update()
+    public EnemyState State { get; set; }
+
+    public event EventHandler MoveFinished;
+
+    public event EventHandler Killed;
+
+    private void Update()
     {
-        
+        switch (State)
+        {
+            case EnemyState.Waiting:
+                break;
+            case EnemyState.Moving:
+                Move();
+                break;
+        }
+    }
+
+    public abstract void SelectMoveTarget();
+
+    public abstract void Move();
+
+    public abstract void ApplyDamage();
+
+    protected void EndMovement()
+    {
+        State = EnemyState.Waiting;
+        MoveFinished?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected void Kill()
+    {
+        Killed?.Invoke(this, EventArgs.Empty);
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        ApplyDamage();
     }
 }
