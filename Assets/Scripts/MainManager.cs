@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class MainManager : MonoBehaviour
 
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private TextMeshProUGUI scoreLabel;
+    [SerializeField] private TextMeshProUGUI highScoreLabel;
+    [SerializeField] private TextMeshProUGUI gameOverLabel;
 
     private int movingEnemies;
     private int spawnNumber;
@@ -29,11 +32,29 @@ public class MainManager : MonoBehaviour
         enemies = new HashSet<Enemy>();
         ShuffleSpawnPositions();
         UpdateScore();
+        DisplayHighScore();
 
         SpawnWave(5);
 
         playerController.BallsReturned += OnPlayerBallsReturned;
         trigger.TriggerEntered += OnGameOverTriggerEntered;
+    }
+
+    private void Update()
+    {
+        if (!isGameOver)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (score > GameManager.Instance.HighScore)
+            {
+                GameManager.Instance.HighScore = score;
+                GameManager.Instance.Save();
+            }
+
+            SceneManager.LoadScene(1);
+        }
     }
 
     private void SpawnWave(int amount)
@@ -45,7 +66,7 @@ public class MainManager : MonoBehaviour
         }
     }
 
-    void SpawnEnemy(GameObject enemyPrefab)
+    private void SpawnEnemy(GameObject enemyPrefab)
     {
         float xSpawn = SpawnPositions[spawnNumber];
         spawnNumber = (spawnNumber + 1) % SpawnPositions.Count;
@@ -76,6 +97,11 @@ public class MainManager : MonoBehaviour
     private void UpdateScore()
     {
         scoreLabel.text = $"Score: {score}";
+    }
+
+    private void DisplayHighScore()
+    {
+        highScoreLabel.text = $"Best: {GameManager.Instance.HighScore}";
     }
 
     private void OnEnemyMoveFinished(object sender, EventArgs e)
@@ -118,5 +144,6 @@ public class MainManager : MonoBehaviour
     private void OnGameOverTriggerEntered(object sender, EventArgs e)
     {
         isGameOver = true;
+        gameOverLabel.gameObject.SetActive(true);
     }
 }
