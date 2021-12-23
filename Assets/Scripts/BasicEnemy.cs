@@ -8,6 +8,8 @@ public class BasicEnemy : Enemy
 
     private float targetZ;
 
+    public override int Score => 1;
+
     private void Start()
     {
         targetZ = transform.position.z;

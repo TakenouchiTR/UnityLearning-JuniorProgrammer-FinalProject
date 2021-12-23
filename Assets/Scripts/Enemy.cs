@@ -11,6 +11,8 @@ public abstract class Enemy : MonoBehaviour
         Moving
     }
 
+    public abstract int Score { get; }
+
     public EnemyState State { get; set; }
 
     public event EventHandler MoveFinished;

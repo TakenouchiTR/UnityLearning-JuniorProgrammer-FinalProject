@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MainManager : MonoBehaviour
@@ -10,9 +11,11 @@ public class MainManager : MonoBehaviour
     };
 
     [SerializeField] private GameObject[] enemyPrefabs;
+    [SerializeField] private TextMeshProUGUI scoreLabel;
 
     private int movingEnemies;
     private int spawnNumber;
+    private int score;
     private bool isGameOver;
     private PlayerController playerController;
     private HashSet<Enemy> enemies;
@@ -25,6 +28,7 @@ public class MainManager : MonoBehaviour
 
         enemies = new HashSet<Enemy>();
         ShuffleSpawnPositions();
+        UpdateScore();
 
         AddEnemy(enemyPrefabs[0]);
         AddEnemy(enemyPrefabs[0]);
@@ -64,6 +68,11 @@ public class MainManager : MonoBehaviour
         spawnNumber = 0;
     }
 
+    private void UpdateScore()
+    {
+        scoreLabel.text = $"Score: {score}";
+    }
+
     private void OnEnemyMoveFinished(object sender, EventArgs e)
     {
         movingEnemies--;
@@ -81,7 +90,12 @@ public class MainManager : MonoBehaviour
 
     private void OnEnemyKilled(object sender, EventArgs e)
     {
-        enemies.Remove(sender as Enemy);
+        Enemy enemy = sender as Enemy;
+
+        enemies.Remove(enemy);
+        score += enemy.Score;
+
+        UpdateScore();
     }
 
     private void OnPlayerBallsReturned(object sender, EventArgs e)
