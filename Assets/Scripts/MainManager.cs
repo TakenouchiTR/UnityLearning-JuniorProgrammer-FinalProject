@@ -30,14 +30,19 @@ public class MainManager : MonoBehaviour
         ShuffleSpawnPositions();
         UpdateScore();
 
-        SpawnEnemy(enemyPrefabs[0]);
-        SpawnEnemy(enemyPrefabs[1]);
-        SpawnEnemy(enemyPrefabs[2]);
-        SpawnEnemy(enemyPrefabs[1]);
-        SpawnEnemy(enemyPrefabs[0]);
+        SpawnWave(5);
 
         playerController.BallsReturned += OnPlayerBallsReturned;
         trigger.TriggerEntered += OnGameOverTriggerEntered;
+    }
+
+    private void SpawnWave(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            GameObject prefab = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)];
+            SpawnEnemy(prefab);
+        }
     }
 
     void SpawnEnemy(GameObject enemyPrefab)
@@ -80,11 +85,7 @@ public class MainManager : MonoBehaviour
         {
             playerController.State = PlayerState.Returning;
             ShuffleSpawnPositions();
-            SpawnEnemy(enemyPrefabs[0]);
-            SpawnEnemy(enemyPrefabs[1]);
-            SpawnEnemy(enemyPrefabs[2]);
-            SpawnEnemy(enemyPrefabs[1]);
-            SpawnEnemy(enemyPrefabs[0]);
+            SpawnWave(5);
         }
     }
 
