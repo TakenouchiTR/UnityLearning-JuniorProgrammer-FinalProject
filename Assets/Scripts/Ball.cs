@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Ball : MonoBehaviour
 {
     private float prevZVelocity;
+    private int collisionListIndex;
     private bool checkVelocity;
+    private List<float> wallZCollisions;
     private Rigidbody ballRb;
 
     public event EventHandler<Vector3> Removed;
@@ -14,15 +17,21 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        wallZCollisions = new List<float>();
         ballRb = GetComponent<Rigidbody>();
-        Invoke(nameof(ToggleCheckVelocity), 2);
         prevZVelocity = ballRb.velocity.z;
+
+        for (int i = 0; i < 5; i++)
+        {
+            wallZCollisions.Add(-100);
+        }
+
+        Invoke(nameof(ToggleCheckVelocity), 2);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //check if we are not going totally vertically as this would lead to being stuck, we add a little vertical force
         var velocity = ballRb.velocity;
         if (checkVelocity && Mathf.Abs(Vector3.Dot(velocity.normalized, Vector3.forward)) < 0.1f)
         {
@@ -46,4 +55,23 @@ public class Ball : MonoBehaviour
         checkVelocity = !checkVelocity;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            wallZCollisions[collisionListIndex] = transform.position.z;
+            collisionListIndex = (collisionListIndex + 1) % wallZCollisions.Count;
+
+            float differences = 0;
+            for (int i = 1; i < wallZCollisions.Count; i++)
+            {
+                differences += Mathf.Abs(wallZCollisions[i] - wallZCollisions[i - 1]);
+            }
+
+            if (differences / (wallZCollisions.Count - 1) <= .01f)
+            {
+                ballRb.AddForce(Vector3.back, ForceMode.Impulse);
+            }
+        }
+    }
 }

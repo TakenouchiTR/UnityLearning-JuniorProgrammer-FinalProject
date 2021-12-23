@@ -9,11 +9,9 @@ public class GameOverTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Object entered game over area");
         if (other.gameObject.CompareTag("Enemy"))
         {
             TriggerEntered?.Invoke(this, EventArgs.Empty);
-            Debug.Log("Enemy entered game over area");
             gameObject.SetActive(false);
         }
     }

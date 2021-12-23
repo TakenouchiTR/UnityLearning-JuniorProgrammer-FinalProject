@@ -30,17 +30,17 @@ public class MainManager : MonoBehaviour
         ShuffleSpawnPositions();
         UpdateScore();
 
-        AddEnemy(enemyPrefabs[0]);
-        AddEnemy(enemyPrefabs[0]);
-        AddEnemy(enemyPrefabs[0]);
-        AddEnemy(enemyPrefabs[0]);
-        AddEnemy(enemyPrefabs[0]);
+        SpawnEnemy(enemyPrefabs[0]);
+        SpawnEnemy(enemyPrefabs[1]);
+        SpawnEnemy(enemyPrefabs[2]);
+        SpawnEnemy(enemyPrefabs[1]);
+        SpawnEnemy(enemyPrefabs[0]);
 
         playerController.BallsReturned += OnPlayerBallsReturned;
         trigger.TriggerEntered += OnGameOverTriggerEntered;
     }
 
-    void AddEnemy(GameObject enemyPrefab)
+    void SpawnEnemy(GameObject enemyPrefab)
     {
         float xSpawn = SpawnPositions[spawnNumber];
         spawnNumber = (spawnNumber + 1) % SpawnPositions.Count;
@@ -80,11 +80,11 @@ public class MainManager : MonoBehaviour
         {
             playerController.State = PlayerState.Returning;
             ShuffleSpawnPositions();
-            AddEnemy(enemyPrefabs[0]);
-            AddEnemy(enemyPrefabs[0]);
-            AddEnemy(enemyPrefabs[0]);
-            AddEnemy(enemyPrefabs[0]);
-            AddEnemy(enemyPrefabs[0]);
+            SpawnEnemy(enemyPrefabs[0]);
+            SpawnEnemy(enemyPrefabs[1]);
+            SpawnEnemy(enemyPrefabs[2]);
+            SpawnEnemy(enemyPrefabs[1]);
+            SpawnEnemy(enemyPrefabs[0]);
         }
     }
 
@@ -103,7 +103,7 @@ public class MainManager : MonoBehaviour
         if (enemies.Count == 0)
         {
             playerController.State = PlayerState.Returning;
-            AddEnemy(enemyPrefabs[0]);
+            SpawnEnemy(enemyPrefabs[0]);
         }
 
         foreach (var enemy in enemies)
@@ -117,6 +117,5 @@ public class MainManager : MonoBehaviour
     private void OnGameOverTriggerEntered(object sender, EventArgs e)
     {
         isGameOver = true;
-        Debug.Log("Enemy entered game over area (event)");
     }
 }
