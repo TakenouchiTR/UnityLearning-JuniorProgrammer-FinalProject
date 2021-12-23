@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private const float XBounds = 4;
     private const float NormalZ = -4.5f;
     private const float RetreatZ = -6.1f;
+    private const float MaxAimAngle = 70;
 
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject ballPrefab;
@@ -131,7 +132,7 @@ public class PlayerController : MonoBehaviour
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         float angle = AngleBetweenPoints(barrelPivot.transform.position, mouseWorldPosition);
-        angle = Mathf.Clamp(-angle - 90, -80, 80);
+        angle = Mathf.Clamp(-angle - 90, -MaxAimAngle, MaxAimAngle);
 
         barrelPivot.transform.rotation = Quaternion.Euler(new Vector3(0f, angle, 180));
     }

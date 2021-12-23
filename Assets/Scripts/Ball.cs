@@ -28,7 +28,17 @@ public class Ball : MonoBehaviour
         {
             ballRb.velocity = new Vector3(velocity.x, 0, -prevZVelocity);
         }
+        else if (checkVelocity && Mathf.Abs(velocity.z) < .001)
+        {
+            Debug.Log("Very low z velocity");
+        }
         prevZVelocity = velocity.z;
+    }
+
+    public void Remove()
+    {
+        Removed?.Invoke(this, this.transform.position);
+        Destroy(gameObject);
     }
 
     void ToggleCheckVelocity()
@@ -36,9 +46,4 @@ public class Ball : MonoBehaviour
         checkVelocity = !checkVelocity;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Removed?.Invoke(this, this.transform.position);
-        Destroy(gameObject);
-    }
 }

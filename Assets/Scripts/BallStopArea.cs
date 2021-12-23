@@ -4,5 +4,11 @@ using UnityEngine;
 
 public class BallStopArea : MonoBehaviour
 {
-    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.gameObject.CompareTag("Ball"))
+            return;
+
+        other.gameObject.GetComponent<Ball>().Remove();
+    }
 }
